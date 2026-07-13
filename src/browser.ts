@@ -3,7 +3,7 @@ import { stealth } from "@mr_ozio/playwright-stealth";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
-const USER_DATA_DIR = join(homedir(), ".chrome-dev-tools", "profile");
+const USER_DATA_DIR = process.env.CHROME_USER_DATA_DIR || join(homedir(), ".chrome-dev-tools", "profile");
 const stealthChromium = stealth(chromium);
 
 let context: BrowserContext | null = null;
@@ -20,7 +20,7 @@ export async function ensureBrowser(): Promise<BrowserContext> {
 
   context = await stealthChromium.launchPersistentContext(USER_DATA_DIR, {
     channel: "chrome",
-    headless: false,
+    headless: process.env.CHROME_HEADLESS === "true",
     viewport: null,
     // --use-mock-keychain makes cookies unreadable across automated and manual
     // launches of this profile (different encryption keys), which breaks the
