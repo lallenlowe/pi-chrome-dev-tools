@@ -32,6 +32,34 @@ That's it. No Chrome flags, no remote debugging setup. The first `chrome_navigat
 - Node.js ≥ 22
 - Google Chrome installed
 
+### Headless servers (Linux)
+
+By default Chrome launches in **headed mode** (`headless: false`) so you can watch it work. On a headless server, you need a virtual framebuffer:
+
+```bash
+sudo apt install xvfb
+xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" pi
+```
+
+Or set `DISPLAY` if you already have Xvfb running:
+
+```bash
+export DISPLAY=:99
+```
+
+Alternatively, run in headless mode:
+
+```bash
+CHROME_HEADLESS=true pi
+```
+
+### Configuration
+
+| Env var | Default | Description |
+|---------|---------|-------------|
+| `CHROME_USER_DATA_DIR` | `~/.chrome-dev-tools/profile` | Chrome profile directory (preserves logins/cookies) |
+| `CHROME_HEADLESS` | `false` | Set to `true` for headless mode |
+
 ---
 
 ## Tools
@@ -118,11 +146,12 @@ chrome_switch_tab({ index: 0 })
 ## How it works
 
 - **Playwright** drives a dedicated Chrome instance via CDP
-- **Persistent profile** at `~/.chrome-dev-tools/profile` preserves logins
+- **Persistent profile** at `~/.chrome-dev-tools/profile` (override with `CHROME_USER_DATA_DIR`) preserves logins
 - **System Chrome** via `channel: "chrome"` — no Chromium download
 - **Stealth** via `@mr_ozio/playwright-stealth` — patches `navigator.webdriver`, plugin arrays, permissions API, and more
 - **Lazy launch** — Chrome only starts when a tool is first called
 - **Auto-cleanup** — browser closes when the pi session ends
+- **Headed by default** — set `CHROME_HEADLESS=true` for headless mode
 
 ---
 
