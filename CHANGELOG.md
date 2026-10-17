@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Run on machines without Google Chrome: when `channel: "chrome"` cannot find
+  `/opt/google/chrome/chrome`, fall back to a local Chromium (`chromium`,
+  `chromium-browser`, NixOS profile paths) or to `PI_CHROME_EXECUTABLE`
+
 ## 0.1.0 (2026-05-06)
 
 Initial release.

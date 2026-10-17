@@ -30,7 +30,9 @@ That's it. No Chrome flags, no remote debugging setup. The first `chrome_navigat
 
 - [pi](https://github.com/mariozechner/pi) (latest)
 - Node.js ≥ 22
-- Google Chrome installed
+- Google Chrome or Chromium installed
+
+  Chromium works too: when Google Chrome is missing, a local Chromium install is detected automatically (tested on NixOS). Override the lookup with `PI_CHROME_EXECUTABLE=/path/to/chrome`.
 
 ---
 
@@ -119,7 +121,7 @@ chrome_switch_tab({ index: 0 })
 
 - **Playwright** drives a dedicated Chrome instance via CDP
 - **Persistent profile** at `~/.chrome-dev-tools/profile` preserves logins
-- **System Chrome** via `channel: "chrome"` — no Chromium download
+- **System Chrome or Chromium** via `channel: "chrome"` — no Chromium download; when Google Chrome is absent the extension falls back to a local Chromium (`chromium`, `chromium-browser`, NixOS profile paths) or to `PI_CHROME_EXECUTABLE`
 - **Stealth** via `@mr_ozio/playwright-stealth` — patches `navigator.webdriver`, plugin arrays, permissions API, and more
 - **Lazy launch** — Chrome only starts when a tool is first called
 - **Auto-cleanup** — browser closes when the pi session ends
