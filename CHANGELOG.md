@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `chrome_switch_tab` now changes the tab that the page tools act on; before,
+  the target was always the most recently opened tab, so `chrome_new_tab`
+  followed by `chrome_switch_tab 0` still drove the new tab
+
 ## 0.1.0 (2026-05-06)
 
 Initial release.

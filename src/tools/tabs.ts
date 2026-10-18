@@ -1,6 +1,6 @@
 import { Type } from "typebox";
 import type { ToolDefinition } from "@mariozechner/pi-coding-agent";
-import { ensureBrowser } from "../browser.js";
+import { ensureBrowser, setActivePage } from "../browser.js";
 import { textResult, errorResult, wrapError } from "../tool-result.js";
 
 const EmptyParams = Type.Object({});
@@ -47,6 +47,7 @@ export const switchTabTool: ToolDefinition<typeof SwitchTabParams> = {
       }
       const page = pages[args.index]!;
       await page.bringToFront();
+      setActivePage(page);
       const title = await page.title();
       return textResult(`Switched to tab ${args.index}: ${page.url()} — ${title}`);
     } catch (err) {
@@ -69,6 +70,7 @@ export const newTabTool: ToolDefinition<typeof NewTabParams> = {
     try {
       const ctx = await ensureBrowser();
       const page = await ctx.newPage();
+      setActivePage(page);
       if (args.url) {
         await page.goto(args.url, { waitUntil: "domcontentloaded", timeout: 30_000 });
       }
@@ -102,6 +104,8 @@ export const closeTabTool: ToolDefinition<typeof CloseTabParams> = {
       const page = pages[idx]!;
       const url = page.url();
       await page.close();
+      const remaining = ctx.pages();
+      setActivePage(remaining[remaining.length - 1] ?? null);
       return textResult(`Closed tab ${idx}: ${url}`);
     } catch (err) {
       return errorResult(wrapError(err));

@@ -7,6 +7,12 @@ const USER_DATA_DIR = join(homedir(), ".chrome-dev-tools", "profile");
 const stealthChromium = stealth(chromium);
 
 let context: BrowserContext | null = null;
+let activePage: Page | null = null;
+
+/** Remember the tab that subsequent page tools should operate on. */
+export function setActivePage(page: Page | null): void {
+  activePage = page;
+}
 
 export async function ensureBrowser(): Promise<BrowserContext> {
   if (context) {
@@ -39,14 +45,17 @@ export async function ensureBrowser(): Promise<BrowserContext> {
 
 export async function getActivePage(): Promise<Page> {
   const ctx = await ensureBrowser();
+  if (activePage && !activePage.isClosed()) return activePage;
   const pages = ctx.pages();
-  return pages[pages.length - 1] ?? (await ctx.newPage());
+  activePage = pages[pages.length - 1] ?? (await ctx.newPage());
+  return activePage;
 }
 
 export async function closeBrowser(): Promise<void> {
   if (context) {
     await context.close();
     context = null;
+    activePage = null;
   }
 }
 
